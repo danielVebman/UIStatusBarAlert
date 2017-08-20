@@ -37,10 +37,11 @@ final class UIStatusBarAlert {
     func setConfiguration(_ configuration: Configuration) {
         alertViewController.titleLabel.text = configuration.title
         alertViewController.titleLabel.textColor = configuration.tintColor
+        alertViewController.titleLabel.font = configuration.font
         alertViewController.view.backgroundColor = configuration.backgroundColor
     }
     
-    func setStatusBarHidden(_ hidden: Bool, with animation: UIStatusBarAnimation) {
+    func setHidden(_ hidden: Bool, with animation: UIStatusBarAnimation) {
         let duration = TimeInterval(UINavigationControllerHideShowBarDuration)
         if hidden {
             hideStatusBar(animation: animation, animationDuration: duration)
@@ -50,9 +51,9 @@ final class UIStatusBarAlert {
     }
     
     func show(for duration: TimeInterval, with animation: UIStatusBarAnimation) {
-        setStatusBarHidden(false, with: animation)
+        setHidden(false, with: animation)
         Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { (timer) in
-            self.setStatusBarHidden(true, with: animation)
+            self.setHidden(true, with: animation)
         }
     }
     
@@ -107,7 +108,6 @@ final class UIStatusBarAlert {
         override func viewDidLoad() {
             titleLabel.frame = CGRect(origin: CGPoint.zero, size: UIStatusBarAlert.shared.size)
             titleLabel.textAlignment = .center
-            titleLabel.font = UIFont.systemFont(ofSize: 15)
             view.addSubview(titleLabel)
         }
     }
@@ -116,5 +116,6 @@ final class UIStatusBarAlert {
         var title = ""
         var tintColor = UIColor.black
         var backgroundColor = UIColor.white
+        var font = UIFont.systemFont(ofSize: 15)
     }
 }
