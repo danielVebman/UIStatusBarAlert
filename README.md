@@ -12,3 +12,7 @@ Once the alert is customized, it can be shown by calling its `show(for:with:)` m
     alert.tintColor = UIColor.white
     alert.title = "Could not access contacts"
     alert.show(for: 3, with: .slide)
+
+## Note
+
+The status bar alert is in such a position that a multiline alert is not asthetically pleasing and bordering messy; thus, the alert is exactly one line long.
