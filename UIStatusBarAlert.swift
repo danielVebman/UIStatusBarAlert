@@ -9,13 +9,11 @@
 import Foundation
 import UIKit
 
-final class UIStatusBarAlert {
-    static var shared = UIStatusBarAlert()
-    
+class UIStatusBarAlert {
     private var window: UIWindow!
     private var alertViewController: AlertViewController!
     
-    private init() {
+    init() {
         let size = CGSize(width: UIScreen.main.bounds.width, height: UIApplication.shared.statusBarFrame.height)
         window = UIWindow(frame: CGRect(origin: CGPoint.zero, size: size))
         window.windowLevel = UIWindowLevelStatusBar + 1
@@ -25,7 +23,7 @@ final class UIStatusBarAlert {
     
     var size: CGSize { return window.frame.size }
     
-    var isHidden: Bool {
+    private var isHidden: Bool {
         get {
             return window.isHidden
         }
@@ -34,26 +32,31 @@ final class UIStatusBarAlert {
         }
     }
     
-    func setConfiguration(_ configuration: Configuration) {
-        alertViewController.titleLabel.text = configuration.title
-        alertViewController.titleLabel.textColor = configuration.tintColor
-        alertViewController.titleLabel.font = configuration.font
-        alertViewController.view.backgroundColor = configuration.backgroundColor
+    var title: String? {
+        get { return alertViewController.titleLabel.text }
+        set(text) { alertViewController.titleLabel.text = text }
     }
     
-    func setHidden(_ hidden: Bool, with animation: UIStatusBarAnimation) {
-        let duration = TimeInterval(UINavigationControllerHideShowBarDuration)
-        if hidden {
-            hideStatusBar(animation: animation, animationDuration: duration)
-        } else {
-            showStatusBar(animation: animation, animationDuration: duration)
-        }
+    var tintColor: UIColor {
+        get { return alertViewController.titleLabel.textColor }
+        set(color) { alertViewController.titleLabel.textColor = color }
+    }
+    
+    var font: UIFont {
+        get { return alertViewController.titleLabel.font }
+        set(font) { alertViewController.titleLabel.font = font }
+    }
+    
+    var backgroundColor: UIColor? {
+        get { return alertViewController.view.backgroundColor }
+        set(color) { alertViewController.view.backgroundColor = color }
     }
     
     func show(for duration: TimeInterval, with animation: UIStatusBarAnimation) {
-        setHidden(false, with: animation)
+        let animationDuration = TimeInterval(UINavigationControllerHideShowBarDuration)
+        showStatusBar(animation: animation, animationDuration: animationDuration)
         Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { (timer) in
-            self.setHidden(true, with: animation)
+            self.hideStatusBar(animation: animation, animationDuration: animationDuration)
         }
     }
     
@@ -106,16 +109,10 @@ final class UIStatusBarAlert {
     private class AlertViewController: UIViewController {
         var titleLabel = UILabel()
         override func viewDidLoad() {
-            titleLabel.frame = CGRect(origin: CGPoint.zero, size: UIStatusBarAlert.shared.size)
+            let size = CGSize(width: UIScreen.main.bounds.width, height: UIApplication.shared.statusBarFrame.height)
+            titleLabel.frame = CGRect(origin: CGPoint.zero, size: size)
             titleLabel.textAlignment = .center
             view.addSubview(titleLabel)
         }
-    }
-    
-    public class Configuration {
-        var title = ""
-        var tintColor = UIColor.black
-        var backgroundColor = UIColor.white
-        var font = UIFont.systemFont(ofSize: 15)
     }
 }
